@@ -1,0 +1,5 @@
+- name: Call firewall role with dynamic rules
+  include_tasks: ../../../common/tasks/firewall.yml
+  vars:
+    required_rules:
+      - "-A INPUT -p tcp -m tcp --dport {{ beszel_port }} -j ACCEPT"

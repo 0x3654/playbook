@@ -1,0 +1,7 @@
+---
+required_packages:
+  - docker.io
+  - docker-compose
+
+PWD: "/server"
+beszel_path: "{{ PWD }}/beszel"

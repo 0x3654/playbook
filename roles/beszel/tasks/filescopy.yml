@@ -1,0 +1,6 @@
+---
+- name: Include common file copy tasks
+  include_tasks: "{{ playbook_dir }}/../roles/common/tasks/filescopy.yml"
+  vars:
+    restart_handler_name: "restart docker beszel"
+    files_source_dir: "{{ role_path }}/files/"
