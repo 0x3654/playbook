@@ -1,0 +1,4 @@
+---
+dependencies:
+  - role: vpn_servers
+    when: inventory_hostname in groups['vpn_servers_role']

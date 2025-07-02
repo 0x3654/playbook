@@ -1,0 +1,13 @@
+server {
+    listen {{ subPort }} ssl;
+    server_name {{ domain_name }};
+
+    ssl_certificate /etc/letsencrypt/live/{{ domain_name }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ domain_name }}/privkey.pem;
+
+    # Конфигурация для получения подписок
+    location ~ ^/s/([^/]+)$ {
+        set $sub_id $1;
+        content_by_lua_file /etc/nginx/3x-ui-sub/config_fetcher.lua;
+    }
+} 

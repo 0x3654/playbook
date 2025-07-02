@@ -1,0 +1,24 @@
+---
+# Конфигурация 3x-ui для {{ domain_name }}
+domain_name: {{ domain_name }}
+filename: 3x-ui_{{ domain_name }}.yml  # Параметр для имени выходного файла
+
+server_info:
+  location: "{{ city }}"  # Можно добавить местоположение сервера
+
+panel:
+  url: "https://{{ domain_name }}:{{ webPort }}/{{ webBasePath }}/"  # Автоматически формируемый URL
+  username: {{ username }}
+  password: {{ password }}
+
+subscription:
+  suburl: "https://{{ domain_name }}:{{ subPort }}/{{ subPath }}/"  # Автоматически формируемый URL
+  suburlid: "https://{{ domain_name }}:{{ subPort }}/{{ subPath }}/{{ inbound_sub_id }}"  # Автоматически формируемый URL
+  subJsonPath: "{{ subJsonPath }}"  # Путь к JSON файлу подписки
+
+# Метаданные для HTML-генерации
+html_meta:
+  title: "VPN Configuration for {{ domain_name }}"
+  description: "Connection details for 3x-ui VPN on {{ domain_name }}"
+  qr_code: true  # Флаг для генерации QR-кода в HTML
+  output_filename: "vpn_config_{{ domain_name }}.html"  # Имя выходного HTML-файла

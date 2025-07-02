@@ -1,0 +1,5 @@
+- name: Include common certbot tasks
+  include_tasks: "{{ playbook_dir }}/../roles/common/tasks/certbot.yml"
+  vars:
+    certbot_notify_handler: "restart vpn docker containers"
+  tags: [ssl]

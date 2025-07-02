@@ -1,0 +1,28 @@
+---
+# defaults file for vpn_servers
+
+required_packages:
+  - docker.io
+  - docker-compose
+  - curl
+  - bash
+  - openssl
+  - htop
+  - vim
+  - sqlite3
+  - certbot
+  - python3-setuptools
+  - fail2ban
+  - whois
+
+# Parameters for repository update control
+update_repo: true
+force_repo_update: true
+
+# Common paths
+PWD: "/server"
+xray_path: "{{ PWD }}/3x-ui"
+xray_db_path: "{{ xray_path }}/db"
+cert_path: "{{ PWD }}/certbot"
+amneziawg_path: "{{ PWD }}/amneziawg"
+fail2ban_path: "{{ PWD }}/fail2ban"

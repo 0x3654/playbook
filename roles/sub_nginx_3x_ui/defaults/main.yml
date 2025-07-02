@@ -1,0 +1,12 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for sub_nginx_3xui
+
+required_packages:
+  - docker.io
+  - docker-compose
+
+# Common paths
+PWD: "/server"
+nginx_proxy_sub: "{{ PWD }}/3x-ui-sub"
+cert_path: "{{ PWD }}/3x-ui-sub/cert/"

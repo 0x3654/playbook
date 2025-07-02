@@ -1,0 +1,9 @@
+#SPDX-License-Identifier: MIT-0
+---
+- name: restart docker nginx_proxy_sub
+  command: "{{ compose_command }} down && {{ compose_command }} up -d"
+  args:
+    chdir: "{{ nginx_proxy_sub }}"
+  register: compose_result
+  #changed_when: compose_result.stdout is search('Creating') or compose_result.stdout is search('Recreating') or compose_result.stdout is search('Starting')
+  changed_when: true

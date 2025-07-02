@@ -1,0 +1,28 @@
+- name: 3x-ui Extract values from config
+  block:
+    - name: Read config file content
+      slurp:
+        path: "{{ playbook_dir }}/../configs/3x-ui_{{ domain_name }}.yml"
+      register: config_content
+      delegate_to: localhost
+
+    - name: Parse YML config
+      set_fact:
+        config_yaml: "{{ config_content['content'] | b64decode | from_yaml }}"
+
+    - name: Extract values from YML
+      set_fact:
+        webPort: "{{ config_yaml.panel.url | regex_search('https://.*:(\\d+)/', '\\1') | first }}"
+        subPort: "{{ config_yaml.subscription.suburl | regex_search('https://.*:(\\d+)/', '\\1') | first }}"
+
+- name: Call firewall role with dynamic rules
+  include_tasks: ../../../common/tasks/firewall.yml
+  vars:
+    required_rules:
+      - "-A INPUT -p tcp -m tcp --dport {{ ssh_port | default(22) }} -j ACCEPT"
+      - "-A INPUT -p tcp -m tcp --dport {{ https_port | default(443) }} -j ACCEPT"
+      #- "-A INPUT -p tcp -m tcp --dport {{ http_port | default(80) }} -j ACCEPT"
+      #- "-A INPUT -p tcp -m tcp --dport {{ webPort }} -j ACCEPT"
+      - "-A INPUT -p tcp -m tcp --dport {{ subPort }} -j ACCEPT"
+      - "-A INPUT -p udp -m udp --dport {{ amnezia_wg_port | default(51820) }} -j ACCEPT"
+  tags: [firewall]

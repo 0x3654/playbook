@@ -1,0 +1,17 @@
+- import_tasks: apt.yml
+  tags: [apt, upgrade]
+
+- import_tasks: certbot.yml
+  tags: [certbot]
+
+- import_tasks: filescopy.yml
+  tags: [filescopy]
+
+- import_tasks: 3x-ui.yml
+  tags: [3x-ui]
+
+- import_tasks: amneziawg.yml
+  tags: [amneziawg]
+
+- import_tasks: firewall.yml
+  tags: [firewall]
