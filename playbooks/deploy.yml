@@ -1,0 +1,47 @@
+---
+- name: Deploy ALL servers
+  hosts: "{{ target_hosts | default('all') }}"
+  vars:
+    ansible_roles_path: "{{ playbook_dir }}/../roles"
+  pre_tasks:
+    # Finding all role directories in the roles folder
+    - name: Find all role directories
+      ansible.builtin.find:
+        paths: "{{ playbook_dir }}/../roles"
+        file_type: directory
+        recurse: no
+      register: found_roles
+      delegate_to: localhost
+      run_once: true
+      tags: [always]
+      
+    # Dynamically include main vars files from all roles
+    - name: Include main vars from all roles
+      include_vars: "{{ item.path }}/vars/main.yml"
+      loop: "{{ found_roles.files }}"
+      loop_control:
+        label: "{{ item.path | basename }}"
+      ignore_errors: true
+      tags: [always]
+      
+    # Dynamically include secrets vars files from all roles
+    - name: Include secrets vars from all roles
+      include_vars: "{{ item.path }}/vars/secrets.yml"
+      loop: "{{ found_roles.files }}"
+      loop_control:
+        label: "{{ item.path | basename }}"
+      ignore_errors: true
+      tags: [always]
+      
+  tasks:
+    # Динамическое подключение ролей на основе групп в инвентори
+    - name: Include role if host is in corresponding group
+      include_role:
+        name: "{{ playbook_dir }}/../roles/{{ role_name }}"
+      vars:
+        role_name: "{{ item.path | basename }}"
+      when: inventory_hostname in groups[role_name + '_role'] | default([])
+      loop: "{{ found_roles.files | sort(attribute='path') }}"
+      loop_control:
+        label: "{{ item.path | basename }}"
+      tags: [always]

@@ -1,0 +1,27 @@
+---
+- name: APT update, upgrade, and install packages
+  when: ansible_pkg_mgr == 'apt'
+  block:
+    - name: APT Update cache
+      apt:
+        update_cache: true
+
+    - name: APT Dist upgrade
+      apt:
+        upgrade: dist
+
+    - name: APT Install required packages
+      apt:
+        name: "{{ required_packages }}"
+        state: present
+
+- name: Check docker compose availability
+  command: docker compose version
+  register: docker_compose_check
+  ignore_errors: yes
+  failed_when: false
+  changed_when: false
+
+- name: Set compose_command fact
+  set_fact:
+    compose_command: "{{ 'docker compose' if docker_compose_check.rc == 0 else 'docker-compose' }}"

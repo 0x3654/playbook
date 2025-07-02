@@ -1,0 +1,56 @@
+---
+- name: Fix DNS configuration
+  hosts: "{{ target_hosts | default('all') }}"
+  gather_facts: false
+  tasks:
+    - name: Test initial network connectivity
+      command: ping -c 3 google.com
+      register: initial_ping
+      changed_when: false
+      failed_when: false
+      ignore_errors: true
+
+    - name: Configure DNS resolvers
+      block:
+        - name: Check if resolv.conf is a symlink
+          stat:
+            path: /etc/resolv.conf
+          register: resolv_stat
+
+        - name: Remove existing resolv.conf (symlink or file)
+          file:
+            path: /etc/resolv.conf
+            state: absent
+            force: true
+
+        - name: Create new resolv.conf with Cloudflare and Google DNS
+          copy:
+            content: |
+              nameserver 1.1.1.1
+              nameserver 8.8.8.8
+            dest: /etc/resolv.conf
+            mode: '0644'
+
+        - name: Test network connectivity after changes
+          command: ping -c 3 google.com
+          register: final_ping
+          changed_when: false
+          failed_when: final_ping.rc != 0
+      when: initial_ping.rc != 0
+      rescue:
+        - name: Register DNS configuration error
+          set_fact:
+            dns_errors: "{{ dns_errors | default([]) + [{'host': inventory_hostname, 'error': ansible_failed_result | default({})}] }}"
+          delegate_to: localhost
+
+    - name: Display DNS status
+      debug:
+        msg: "{{ 'DNS is working fine' if initial_ping.rc == 0 else 'DNS was fixed' if final_ping.rc == 0 else 'Failed to fix DNS' }}"
+      delegate_to: localhost
+
+    - name: Display DNS errors if any
+      debug:
+        msg: "DNS configuration errors occurred: {{ dns_errors | default([]) }}"
+      when: dns_errors is defined and dns_errors | length > 0
+      delegate_to: localhost
+      run_once: true

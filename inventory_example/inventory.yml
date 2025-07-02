@@ -1,0 +1,58 @@
+all:
+  children:
+    ubuntu_servers:
+      hosts:
+        srv1:
+          ansible_host: srv1
+          domain_name: srv1.0x3654.com
+          city: "city1"
+        srv2:
+          ansible_host: srv2
+          domain_name: srv2.0x3654.com
+          city: "city2"
+    debian_servers:
+      hosts:
+        srv3:
+          ansible_host: srv3
+          domain_name: srv3.0x3654.com
+          city: "city3"
+        srv4:
+          ansible_host: srv4
+          domain_name: srv4.0x3654.com
+          city: "city4"
+        srv5:
+          ansible_host: srv5
+          domain_name: srv5.0x3654.com
+          city: "city5"
+          ruserv: "true"
+
+  vars:
+    ansible_user: root
+
+vpn_servers_role:
+  hosts:
+    srv1:
+    srv2:
+    srv3:
+    srv4:
+    srv5:
+
+sub_nginx_3xui_role:
+  hosts:
+    srv4:
+
+beszel_role:
+  hosts:
+    srv1:
+    srv2:
+    srv3:
+    srv4:
+    srv5:
+
+watchtower_role:
+  hosts:
+    srv1:
+    srv2:
+    srv3:
+    srv4:
+    srv5:

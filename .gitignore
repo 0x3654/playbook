@@ -1,0 +1,31 @@
+# IDE files
+ansible.code-workspace
+*.vscode
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Environment files
+*.pem
+*.key
+*.env
+
+# Logs
+*.log
+
+#TO DO
+*.todo
+
+# Исключаем инвентрию
+inventory/inventory.yml
+
+# Исключаем сгенерированные конфигурации
+configs/*
+
+data_*
+
+# Исключаем файлы с секретами
+*.vault
+vault_password_file
+*secrets.yml

@@ -1,0 +1,72 @@
+---
+- name: Bootstrap system and configure SSH root access
+  hosts: "{{ target_hosts | default('all') }}"
+  gather_facts: false
+  become: true
+  become_method: sudo
+
+  vars:
+    ubuntu_user: ubuntu
+    ansible_user: root
+    ansible_python_interpreter: /bin/sh
+
+  pre_tasks:
+    - name: Install python3 if not present
+      raw: |
+        if ! command -v python3 >/dev/null 2>&1; then
+          apt update && apt install -y python3
+        fi
+      changed_when: false
+
+    - name: Install python3-apt if missing (needed for Ansible apt module)
+      raw: |
+        if ! dpkg -s python3-apt >/dev/null 2>&1; then
+          apt update && apt install -y python3-apt
+        fi
+      changed_when: false
+
+    - name: Set python interpreter to python3 for subsequent tasks
+      set_fact:
+        ansible_python_interpreter: /usr/bin/python3
+
+    - name: Set ansible_user for Ubuntu servers
+      when: "'ubuntu_servers' in group_names"
+      set_fact:
+        ansible_user: "{{ ubuntu_user }}"
+
+    - name: Gather facts with new interpreter
+      setup:
+
+  tasks:
+    - name: Ensure root SSH login is enabled
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PermitRootLogin'
+        line: 'PermitRootLogin yes'
+        state: present
+      register: ssh_config
+
+    - name: Restart sshd service if config changed
+      when: ssh_config.changed
+      ansible.builtin.service:
+        name: ssh
+        state: restarted
+      
+    - name: Install public keys for root
+      ansible.posix.authorized_key:
+        user: root
+        state: present
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+    - name: Change sudoers file to NOPASSWD for sudo group (Debian 11+)
+      become: true
+      when: >
+        ansible_facts['os_family'] == "Debian"
+        and ansible_facts['distribution_major_version'] is version('11', '>=')
+        and ansible_facts['distribution'] == 'Debian'
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^%sudo'
+        line: '%sudo ALL=(ALL) NOPASSWD: ALL'
+        validate: /usr/sbin/visudo -cf %s
