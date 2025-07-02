@@ -4,6 +4,6 @@
 [submodule "3x-ui-sub"]
 	path = roles/sub_nginx_3x_ui/files/3x-ui-sub
 	url = https://github.com/0x3654/nginx-3x-ui-subscription-proxy.gitf
-[submodule "roles/vpnserver/files/vpnserver"]
+[submodule "vpnserver"]
 	path = roles/vpnserver/files/vpnserver
 	url = https://github.com/0x3654/vpnserver.git
