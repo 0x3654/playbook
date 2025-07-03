@@ -1,0 +1,15 @@
+services:
+  headscale:
+    image: docker.io/headscale/headscale
+    restart: unless-stopped
+    container_name: headscale
+    ports:
+      - "127.0.0.1:{{headscale_port1 }}:{{headscale_port1 }}"
+      - "127.0.0.1:{{headscale_port2 }}:{{headscale_port2 }}"
+    volumes:
+      # Please set <HEADSCALE_PATH> to the absolute path
+      # of the previously created headscale directory.
+      - ./config:/etc/headscale
+      - ./lib:/var/lib/headscale
+      - ./run:/var/run/headscale
+    command: serve

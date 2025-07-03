@@ -1,0 +1,6 @@
+- name: Call firewall role with dynamic rules
+  include_tasks: ../../../common/tasks/firewall.yml
+  vars:
+    required_rules:
+      - "-A INPUT -p tcp -m tcp --dport {{ headscale_port1 }} -j ACCEPT"
+      - "-A INPUT -p tcp -m tcp --dport {{ headscale_port2 }} -j ACCEPT"

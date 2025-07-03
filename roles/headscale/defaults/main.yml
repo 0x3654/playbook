@@ -1,0 +1,11 @@
+---
+required_packages:
+  - docker.io
+  - docker-compose
+
+PWD: "/server"
+
+# Parameters for headscale
+headscale_path: "{{ PWD }}/headscale"
+headscale_port1: "8080"
+headscale_port2: "9090"
