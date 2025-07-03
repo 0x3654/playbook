@@ -1,0 +1,50 @@
+- name: Validate target_hosts parameter
+  assert:
+    that:
+      - target_hosts is defined
+      - target_hosts != 'all'
+      - target_hosts in groups['all']
+      - target_hosts is string
+    fail_msg: >
+      Parameter target_hosts must be a single valid host from inventory, not 'all' or multiple hosts.
+
+- name: Prompt for IP address
+  vars_prompt:
+    - name: address
+      prompt: "Enter IP address for A record"
+      private: no
+
+- name: Add A record via Namecheap API
+  uri:
+    url: "https://api.namecheap.com/xml.response"
+    method: POST
+    body_format: form-urlencoded
+    body:
+      ApiUser: "{{ api_user }}"
+      ApiKey: "{{ api_key }}"
+      UserName: "{{ user_name }}"
+      ClientIp: "{{ client_ip }}"
+      Command: namecheap.domains.dns.setHosts
+      SLD: "{{ sld }}"
+      TLD: "{{ tld }}"
+      HostName1: "{{ hostvars[target_hosts]['hostname'] }}"
+      RecordType1: "{{ record_type }}"
+      Address1: "{{ address }}"
+      TTL1: "{{ ttl }}"
+    headers:
+      Content-Type: application/x-www-form-urlencoded
+  register: result
+
+- name: Check if API call was successful
+  set_fact:
+    api_success: "{{ '<Errors>' not in result.content }}"
+
+- name: Display API result
+  debug:
+    msg: >
+      {% if api_success %}
+        ✅ DNS record for {{ hostvars[target_hosts]['hostname'] }} successfully added.
+      {% else %}
+        ❌ Failed to add DNS record for {{ hostvars[target_hosts]['hostname'] }}. API response:
+        {{ result.content }}
+      {% endif %}

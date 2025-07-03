@@ -1,0 +1,57 @@
+# Ansible VPN Server Configuration
+
+## Overview
+This repository contains Ansible playbooks and roles for automated deployment and configuration of VPN servers with multiple protocols support (Xray, WireGuard), monitoring, and security features.
+
+## Features
+- Multi-protocol VPN server setup (3x-ui, AmnesiaWG)
+- Automatic SSL certificate management
+- Firewall configuration
+- Fail2ban integration
+- Docker container management with Watchtower
+- Subscription system for VPN configurations
+- DNS management
+- Server maintenance tools
+
+## Prerequisites
+- Ansible 2.9 or higher
+- Target servers with Ubuntu 20.04/22.04
+- SSH access to target servers
+- Python 3.x on target servers
+
+## Quick Start
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd ansible
+```
+2. Initialize inventory:
+```bash
+mv inventory-example/inventory.yml inventory/inventory.yml
+```
+3. Configure your inventory file with server details
+4. Deploy the configuration:
+```bash
+make deploy
+```
+## Available Commands
+- make deploy - Deploy full configuration
+- make deploy-import-db - Only forse import database for 3x-ui
+- make restart - Restart servers
+- make cleanup-all - Clean up all
+- make fix-dns - Fix DNS configuration
+- make init-new-server - copy ssh key and add root ssh login
+
+
+## Project Structure
+- playbooks/ - Ansible playbooks for different deployment scenarios
+- roles/ - Reusable Ansible roles
+  - vpn_servers/ - Main VPN server configuration (X-RAY, AmneziaWG)
+  - beszel/ - Simple, lightweight server monitoring agent
+  - common/ - Common tasks
+  - watchtower/ - Automatic Docker container updates
+  - sub_nginx_3x_ui/ - Subscription links gatherer
+  - headscale/ - open source, self-hosted implementation of the Tailscale. Tailscale is VPN service (WireGuard)
+  - homelab/ - mediaserver, utils, sLLM
+- configs/ - Generated configuration files (git-ignored)
+- inventory/ - Server inventory files (git-ignored)
