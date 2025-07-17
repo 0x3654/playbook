@@ -2,7 +2,7 @@
 	path = inventory
 	url = git@github.com:0x3654/ansible-inventory
 [submodule "3x-ui-sub"]
-	path = roles/sub_nginx_3x_ui/files/3x-ui-sub
+	path = roles/sub_nginx_3x_ui/files/subnginx3xui
 	url = https://github.com/0x3654/nginx-3x-ui-subscription-proxy.gitf
 [submodule "vpnserver"]
 	path = roles/vpnserver/files/vpnserver
