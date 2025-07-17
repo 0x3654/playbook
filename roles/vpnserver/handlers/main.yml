@@ -16,7 +16,7 @@
   register: compose_result
   changed_when: compose_result.stdout is search('Creating') or compose_result.stdout is search('Recreating') or compose_result.stdout is search('Starting')
 
-- name: Restart vpn docker containers
+- name: restart vpn docker containers
   command: "{{ compose_command }} down && {{ compose_command }} up -d"
   args:
     chdir: "{{ PWD }}"
