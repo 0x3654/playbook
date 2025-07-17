@@ -5,7 +5,8 @@
     - name: APT Update cache
       apt:
         update_cache: true
-
+        cache_valid_time: 3600  # 1 hour
+        
     - name: APT Dist upgrade
       apt:
         upgrade: dist

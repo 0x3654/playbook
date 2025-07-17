@@ -16,8 +16,8 @@ required_packages:
   - whois
 
 # Parameters for repository update control
-update_repo: true
-force_repo_update: true
+update_repo: false
+force_repo_update: false
 
 # Common paths
 PWD: "/server"
