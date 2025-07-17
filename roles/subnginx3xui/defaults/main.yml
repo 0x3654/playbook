@@ -5,6 +5,7 @@
 required_packages:
   - docker.io
   - docker-compose
+  - certbot
 
 # Common paths
 PWD: "/server"
