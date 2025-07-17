@@ -7,6 +7,10 @@ required_packages:
   - docker-compose
   - certbot
 
+# Parameters for repository update control
+update_repo: true
+force_repo_update: true
+
 # Common paths
 PWD: "/server"
 nginx_proxy_sub: "{{ PWD }}/3x-ui-sub"

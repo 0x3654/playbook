@@ -1,4 +1,7 @@
 ---
+- import_tasks: apt.yml
+  tags: [apt, upgrade]
+
 - name: Configure sub-nginx for 3x-ui
   block:
     - import_tasks: certbot.yml
